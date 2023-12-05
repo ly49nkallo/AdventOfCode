@@ -3,15 +3,29 @@ from pprint import pprint
 def main():
     data = load_card_info(test=False)
     # pprint(data)
-    l_total_points = []
+    points = []
+    number_of_matching_numbers = []
+     
     for card in data:
-        
         u = card[0].intersection(card[1])
-        points = 2 ** (len(u) - 1)
-        points = int(points) # trunc
-        l_total_points.append(points)
-    # print(l_total_points)
-    print(sum(l_total_points))
+        p = 2 ** (len(u) - 1)
+        p = int(p) # trunc p < 1 to 0
+        points.append(p)
+        number_of_matching_numbers.append(len(u))
+    
+    number_of_copies = [0] * len(points)
+    
+    #Construct number_of_copies
+    i = 0
+    while i < len(points):
+        for j in range(i+1, i+number_of_matching_numbers[i]+1):
+            number_of_copies[j] += 1 + number_of_copies[i]
+        i += 1
+
+    for i in range(len(number_of_copies)):
+        number_of_copies[i] += 1
+    
+    print(sum(number_of_copies))
 
 
 def load_card_info(test=True) -> list:
