@@ -4,15 +4,7 @@ from tqdm import tqdm
 def main():
     data = load_file(test=False)
     seeds, maps = parse_data(data) 
-    print('parsed_data')
-    max_location = 0
-    for seed_gen in tqdm(seeds):
-        for seed in tqdm(seed_gen):
-            path = trace_path(seed, maps)
-            # print(seed, 'location @', path[-1])
-            if max_location < path[-1]:
-                max_location = path[-1]
-    print(min(locations))
+
 
 def trace_path(seed:int, maps:dict) -> list:
     ret = []
