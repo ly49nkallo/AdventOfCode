@@ -4,12 +4,14 @@ from tqdm import tqdm
 def main():
     data = load_file(test=False)
     seeds, maps = parse_data(data) 
-    locations = []
-
-    for seed in seeds:
-        path = trace_path(seed, maps)
-        # print(seed, 'location @', path[-1])
-        locations.append(path[-1])
+    print('parsed_data')
+    max_location = 0
+    for seed_gen in tqdm(seeds):
+        for seed in tqdm(seed_gen):
+            path = trace_path(seed, maps)
+            # print(seed, 'location @', path[-1])
+            if max_location < path[-1]:
+                max_location = path[-1]
     print(min(locations))
 
 def trace_path(seed:int, maps:dict) -> list:
@@ -43,6 +45,11 @@ def trace_path(seed:int, maps:dict) -> list:
 
 def parse_data(data):
     seeds = [int(i) for i in re.split(":? ", data[0])[1:]]
+    seeds2 = []
+    assert len(seeds) % 2 == 0
+    for i in range(int(len(seeds) / 2)):
+        j = i * 2
+        seeds2.append(range(seeds[j], seeds[j] + seeds[j+1]))
     maps = {}
     for i, line in enumerate(data):
         if re.match('.+-', line):
@@ -50,7 +57,7 @@ def parse_data(data):
             maps[(source, destination)] = []
         elif re.match('\d+ \d+ \d+', line):
             maps[(source, destination)].append(list(map(int, line.split(' '))))
-    return seeds, maps
+    return seeds2, maps
 
 
 def load_file(test=True):
